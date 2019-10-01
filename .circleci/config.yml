@@ -67,10 +67,10 @@ jobs:
   #        path: test_results
 
 workflows:
- version: 2.1
- dockerfile_wizard:
-   jobs:
-     - build-image:
+  version: 2.1
+  dockerfile_wizard:
+    jobs:
+      - build-image:
 ##          context: org-global
 
     #  - test_image:
