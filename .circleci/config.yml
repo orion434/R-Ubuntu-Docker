@@ -36,8 +36,8 @@ jobs:
     environment:
       <<: *image_config
 
-  #   steps:
-  #     - checkout
+    steps:
+      - checkout
 
   #     - run: bash scripts/generate.sh > Dockerfile
   #     - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
