@@ -73,4 +73,4 @@ workflows:
       - test_image:
     #      context: org-global
         requires:
-          - build
+          - build-image
