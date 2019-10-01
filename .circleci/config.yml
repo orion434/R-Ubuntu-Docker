@@ -70,7 +70,7 @@ workflows:
   version: 2.1
   dockerfile_wizard:
     jobs:
-      - build-image:
+      - build-image
 ##          context: org-global
 
     #  - test_image:
