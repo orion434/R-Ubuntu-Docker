@@ -9,47 +9,38 @@ refernces:
     # either as project-specific environment variables
     # or as resources in your organization's org-global Context
 
-    IMAGE_NAME: Ubuntu-R
-    IMAGE_TAG: Ubuntu-R
-
-    # NOTE: if you're modifying this config.yml file manually
-    # rather than using the included setup script,
-    # make sure you also add the values of your IMAGE_NAME & IMAGE_TAG variables
-    # to the `test_image` job (line 55)
-
-  #  LINUX_VERSION: UBUNTU_XENIAL
+    IMAGE_NAME: ubuntu-lts-r
+    IMAGE_TAG: 0.01
     LINUX_VERSION: UBUNTU_BIONIC
-
-    # RUBY_VERSION_NUM: # pick a version from https://cache.ruby-lang.org/pub/ruby
-    # NODE_VERSION_NUM: # pick a version from https://nodejs.org/dist
-
-    PYTHON_VERSION_NUM: 3
-    JAVA: false
-    MYSQL_CLIENT: false
-    POSTGRES_CLIENT: false
-    DOCKERIZE: true
-    BROWSERS: false
 
 jobs:
   build-image:
     machine: true
+    # image: ubuntu-1604:201903-01 
+    # circleci/classic:latest
     environment:
       <<: *image_config
 
     steps:
       - checkout
 
-  #     - run: bash scripts/generate.sh > Dockerfile
-  #     - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+# Preparing the Image for the Registry
+# > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
+      - run:  docker build -t orion42/$IMAGE_NAME:$IMAGE_TAG .circleci/image/Dockerfile
   #     - run: docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG .
-  #     - run: docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG && sleep 10
+
+# Pushing the image to the registry 
+# > https://circleci.com/docs/2.0/custom-images/#pushing-the-image-to-the-registry
+
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - run: docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG  #&& sleep 10
 
   #     - store_artifacts:
   #         path: Dockerfile
 
   # test_image:
   #   docker:
-  #     - image: $DOCKER_USERNAME/Ubuntu-R:Ubuntu-R
+  #     - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
   #       environment:
   #         <<: *image_config
 
