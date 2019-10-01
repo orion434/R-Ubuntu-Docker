@@ -10,9 +10,9 @@ RUN \
 RUN \  
   apt-get install -y -qq --no-install-recommends sudo cmake git ssh tar gzip ca-certificates \
     libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
-    netcdf-bin libssl-dev
-#   && libboost-all-dev \
-#   && libxml2-dev
+    netcdf-bin libssl-dev \
+    libboost-all-dev \
+    libxml2-dev
 
 #USER root
 
