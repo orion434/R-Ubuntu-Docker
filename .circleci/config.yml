@@ -34,15 +34,15 @@ jobs:
   #     - store_artifacts:
   #         path: Dockerfile
 
-    test_image:
-      docker:
-        - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
-      environment:
-        <<: *image_config
+  test_image:
+    docker:
+      - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
+    environment:
+      <<: *image_config
 
-      steps:
-        - checkout
-        - run: cat /etc/*-release # Echo Linux version
+    steps:
+      - checkout
+      - run: cat /etc/*-release # Echo Linux version
 
   #    - run:
   #        name: start Xvfb for phantomjs test
@@ -70,7 +70,7 @@ workflows:
       - build-image
 ##          context: org-global
 
-    #  - test_image:
+     - test_image:
     #      context: org-global
-    #      requires:
-    #        - build
+         requires:
+           - build
