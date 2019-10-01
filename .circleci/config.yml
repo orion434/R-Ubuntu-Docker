@@ -15,9 +15,9 @@ refernces:
 
 jobs:
   build-image:
-    machine: true
+    machine: 
     # image: ubuntu-1604:201903-01 
-    # circleci/classic:latest
+      image: circleci/classic:latest
     environment:
       <<: *image_config
 
