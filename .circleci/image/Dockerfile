@@ -8,9 +8,9 @@ FROM rocker/r-ubuntu:18.04
 RUN \
   apt-get update -qq && apt-get install -y -qq --no-install-recommends apt-utils
 RUN \  
-  && apt-get install -y -qq --no-install-recommends sudo cmake git ssh tar gzip ca-certificates \
-        libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
-        netcdf-bin libssl-dev
+  apt-get install -y -qq --no-install-recommends sudo cmake git ssh tar gzip ca-certificates \
+    libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
+    netcdf-bin libssl-dev
 #   && libboost-all-dev \
 #   && libxml2-dev
 

@@ -11,12 +11,10 @@ refernces:
 
     IMAGE_NAME: ubuntu-lts-r
     IMAGE_TAG: 0.02
-    LINUX_VERSION: UBUNTU_BIONIC
 
 jobs:
   build-image:
     machine: 
-    # image: ubuntu-1604:201903-01 
       image: circleci/classic:latest
     environment:
       <<: *image_config
@@ -27,25 +25,24 @@ jobs:
 # Preparing the Image for the Registry
 # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
       - run:  docker build -t orion42/$IMAGE_NAME:$IMAGE_TAG .circleci/image/
-  #     - run: docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG .
 
 # Pushing the image to the registry 
 # > https://circleci.com/docs/2.0/custom-images/#pushing-the-image-to-the-registry
-
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - run: docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG  #&& sleep 10
 
   #     - store_artifacts:
   #         path: Dockerfile
 
-  # test_image:
-  #   docker:
-  #     - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
-  #       environment:
-  #         <<: *image_config
+    test_image:
+      docker:
+        - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
+      environment:
+        <<: *image_config
 
-  #  steps:
-  #    - checkout
+      steps:
+        - checkout
+        - run: cat /etc/*-release # Echo Linux version
 
   #    - run:
   #        name: start Xvfb for phantomjs test
