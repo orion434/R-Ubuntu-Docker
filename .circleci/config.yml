@@ -27,7 +27,7 @@ refernces:
     JAVA: false
     MYSQL_CLIENT: false
     POSTGRES_CLIENT: false
-    DOCKERIZE: false
+    DOCKERIZE: true
     BROWSERS: false
 
 jobs:
