@@ -65,12 +65,10 @@ jobs:
 
 workflows:
   version: 2.1
-  dockerfile_wizard:
+  deploy_dockerfile:
     jobs:
       - build-image
-##          context: org-global
-
       - test_image:
-    #      context: org-global
-        requires:
-          - build-image
+          requires:
+            - build-image
+ #      context: org-global
