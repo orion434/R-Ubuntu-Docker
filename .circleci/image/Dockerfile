@@ -8,7 +8,7 @@ FROM rocker/r-ubuntu:18.04
 RUN \
   apt-get update -qq \
   && apt-get install -y -qq --no-install-recommends sudo apt-utils cmake \
-  && git ssh tar gzip ca-certificates
+         git ssh tar gzip ca-certificates
 #   && libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
 #   && netcdf-bin libssl-dev \
 #   && libboost-all-dev \
