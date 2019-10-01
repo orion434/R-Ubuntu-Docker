@@ -7,8 +7,8 @@ FROM rocker/r-ubuntu:18.04
 # git ssh tar gzip ca-certificates are needed for circleci : https://circleci.com/docs/2.0/custom-images/#required-tools-for-primary-containers
 RUN \
   apt-get update -qq \
-  && apt-get install -y -qq --no-install-recommends sudo apt-utils cmake \
-         git ssh tar gzip ca-certificates
+  && apt-get install -y -qq --no-install-recommends apt-utils 
+  && apt-get install -y -qq --no-install-recommends sudo cmake git ssh tar gzip ca-certificates
 #   && libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
 #   && netcdf-bin libssl-dev \
 #   && libboost-all-dev \
