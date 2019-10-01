@@ -6,7 +6,7 @@ refernces:
 
     IMAGE_USERNAME: orion42   # Username on docker
     IMAGE_NAME: ubuntu-lts-r    # Name of the project on docker
-    IMAGE_TAG: 0.03                    #  Docker version tag
+    IMAGE_TAG: 0.04-devtools     #  Docker version tag
  
 jobs:
   build-image:
@@ -20,7 +20,7 @@ jobs:
 
 # Preparing the Image for the Registry
 # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
-      - run:  docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG .circleci/image/
+      - run:  docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG ./
 
 # Pushing the image to the registry 
 # > https://circleci.com/docs/2.0/custom-images/#pushing-the-image-to-the-registry
