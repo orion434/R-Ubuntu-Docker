@@ -6,7 +6,7 @@ refernces:
 
     IMAGE_USERNAME: orion42   # Username on docker
     IMAGE_NAME: ubuntu-lts-r    # Name of the project on docker
-    IMAGE_TAG: 0.04-devtools     #  Docker version tag
+    IMAGE_TAG: 0.04_devtools     #  Docker version tag
     R_LIBS: ./ci_dependencies
 
   create_dir_cache_key: &create_dir_cache_key
