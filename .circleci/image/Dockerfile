@@ -1,6 +1,6 @@
 # Pull base image.
 #FROM ubuntu:latest
-FROM rocker/r-ubuntu:19.04 
+FROM rocker/r-ubuntu:18.04 
 # To install, use the explicit LTS tag---currently 18.04---when pulling
 # https://hub.docker.com/r/rocker/r-ubuntu
 
