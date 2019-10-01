@@ -1,34 +1,37 @@
-image_config: &image_config
+---
+version: 2.1
 
-  # make sure to set your Docker Hub username & password in CircleCI,
-  # either as project-specific environment variables
-  # or as resources in your organization's org-global Context
+refernces:
 
-  IMAGE_NAME: Ubuntu-R
+  image_config: &image_config
 
-  IMAGE_TAG: Ubuntu-R
+    # make sure to set your Docker Hub username & password in CircleCI,
+    # either as project-specific environment variables
+    # or as resources in your organization's org-global Context
 
-  # NOTE: if you're modifying this config.yml file manually
-  # rather than using the included setup script,
-  # make sure you also add the values of your IMAGE_NAME & IMAGE_TAG variables
-  # to the `test_image` job (line 55)
+    IMAGE_NAME: Ubuntu-R
+    IMAGE_TAG: Ubuntu-R
 
-#  LINUX_VERSION: UBUNTU_XENIAL
-  LINUX_VERSION: UBUNTU_BIONIC
+    # NOTE: if you're modifying this config.yml file manually
+    # rather than using the included setup script,
+    # make sure you also add the values of your IMAGE_NAME & IMAGE_TAG variables
+    # to the `test_image` job (line 55)
 
-  # RUBY_VERSION_NUM: # pick a version from https://cache.ruby-lang.org/pub/ruby
-  # NODE_VERSION_NUM: # pick a version from https://nodejs.org/dist
+  #  LINUX_VERSION: UBUNTU_XENIAL
+    LINUX_VERSION: UBUNTU_BIONIC
 
-  PYTHON_VERSION_NUM: 3
-  JAVA: false
-  MYSQL_CLIENT: false
-  POSTGRES_CLIENT: false
-  DOCKERIZE: false
-  BROWSERS: false
+    # RUBY_VERSION_NUM: # pick a version from https://cache.ruby-lang.org/pub/ruby
+    # NODE_VERSION_NUM: # pick a version from https://nodejs.org/dist
 
-version: 2
+    PYTHON_VERSION_NUM: 3
+    JAVA: false
+    MYSQL_CLIENT: false
+    POSTGRES_CLIENT: false
+    DOCKERIZE: false
+    BROWSERS: false
+
 jobs:
-  build:
+  build-image:
     machine: true
     environment:
       <<: *image_config
@@ -76,7 +79,7 @@ workflows:
  version: 2
  dockerfile_wizard:
    jobs:
-     - build:
+     - build-image:
 ##          context: org-global
 
      - test_image:
