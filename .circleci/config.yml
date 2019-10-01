@@ -46,7 +46,7 @@ jobs:
       
 # Preparing the Image for the Registry
 # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
-      - run:  docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
+      - run:  docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG /
       #- run:  docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG .circleci/image/
 
 # Pushing the image to the registry 
