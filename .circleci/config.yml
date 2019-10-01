@@ -43,8 +43,8 @@ jobs:
 
       - *create_dir_cache_key
       - *restore_cache_ci_dependencies
-      - pwd
-      - ls
+      - run: pwd
+      - run: ls
       
 # Preparing the Image for the Registry
 # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
