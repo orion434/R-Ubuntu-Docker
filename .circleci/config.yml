@@ -10,7 +10,7 @@ refernces:
     # or as resources in your organization's org-global Context
 
     IMAGE_NAME: ubuntu-lts-r
-    IMAGE_TAG: 0.01
+    IMAGE_TAG: 0.02
     LINUX_VERSION: UBUNTU_BIONIC
 
 jobs:
