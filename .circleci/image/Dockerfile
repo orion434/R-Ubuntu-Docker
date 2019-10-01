@@ -12,9 +12,9 @@ RUN \
     libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
     netcdf-bin libssl-dev libboost-all-dev libxml2-dev \
     subversion
-    
+
 RUN \
-    Rscript -e 'devtools::install_deps(dependencies = TRUE)'
+    Rscript -e 'install.packages("devtools")'
 
 #USER root
 
