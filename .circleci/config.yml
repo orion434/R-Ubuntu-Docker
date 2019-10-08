@@ -59,10 +59,20 @@ jobs:
       #- run: cat /etc/*-release # Echo Linux version
       #- run : md5sum --version # 8.28
 
+      # 
+      # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
+      # if != "All packages are up to date"
+
       #- run:  apt-get install md5sum
       - run: apt-get update && apt list --upgradable
       #- run: apt list
 
+
+      - run: "Check how many packages can be upgraded"
+      - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
+      - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
+
+      
       - run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
       - run: cur_deps_checksum=$(md5sum deps_checksum) 
       
