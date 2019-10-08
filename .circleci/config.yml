@@ -72,7 +72,7 @@ jobs:
       - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
       - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
       - run: pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)")
-      - run: echo "$pkgnum to be upgraded"
+      - run: echo "$pkg_num to be upgraded"
 
 
       - run: |
