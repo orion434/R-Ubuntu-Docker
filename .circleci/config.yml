@@ -45,8 +45,8 @@ jobs:
   test_image:
     docker:
       - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
-    # environment:
-    #   <<: *image_config
+    environment:
+      <<: *image_config # Needed for using the variables in the name of image
     steps:
       - checkout
       - run: cat /etc/*-release # Echo Linux version
