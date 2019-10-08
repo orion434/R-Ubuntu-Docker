@@ -31,7 +31,7 @@ refernces:
       # make sure to set your Docker Hub username & password in CircleCI,
       # either as project-specific environment variables  or as resources in your organization's org-global Context
       
- jobs:
+jobs:
 
   build_deploy_docker:
     machine: 
