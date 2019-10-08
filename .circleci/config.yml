@@ -13,9 +13,19 @@ refernces:
     run:
       name: Build the docker from Dockerfile
       command: |
-            docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG -t $IMAGE_USERNAME/$IMAGE_NAME:latest  ./ --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
+    
+           IMAGE_FULLNAME="$IMAGE_USERNAME/$IMAGE_NAME"
+
+          docker build  --no-cache=true  \
+            --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+            --build-arg VCS_REF=$(git rev-parse --short HEAD) \
+            #--build-arg BUILD_VERSION=${build_version} \
+            -t $IMAGE_FULLNAME:$IMAGE_TAG \
+            -t $IMAGE_FULLNAME:alpha \
+            -t $IMAGE_FULLNAME:latest 
+        
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
 
         # Preparing the Image for the Registry (docker build)
         # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
@@ -29,7 +39,7 @@ refernces:
 
 jobs:
 
-  build-image:
+  build-deploy-docker:
     machine: 
       image: circleci/classic:latest
     environment:
@@ -37,9 +47,6 @@ jobs:
 
     steps:
       - checkout
-      - run: pwd
-      - run: ls
-      
       - *build_docker
 
   test_image:
@@ -52,7 +59,7 @@ jobs:
       - checkout
       - run: cat /etc/*-release # Echo Linux version
   
-  check_image:
+  check_update_docker:  # Check if an update of docker is needed, if so run the build-deploy-docker job
     docker:
       - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
     environment:
@@ -60,52 +67,49 @@ jobs:
 
     steps:
       - checkout
+      - run: cat /etc/*-release # Echo Linux version
+
       # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
 
       #https://linoxide.com/linux-how-to/list-number-packages-updates-linux/
-      - run: printf "Check how many packages can be upgraded\n"
-      - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
-      - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
-      - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
-      - run: echo $pkg_num 
-      - run: echo "$pkg_num" 
-      - run: echo "$pkg_num to be upgraded"
+      - run: |
+          printf "Check how many packages can be upgraded\n"
+          apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
+          apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
 
-      - run: printf "$pkg_num"
-      - run: printf "$pkg_num to be upgraded \n"
+      - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
 
       - run: |
           export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
 
-          IMAGE_FULLNAME="$IMAGE_USERNAME/$IMAGE_NAME"
-
           if [  "$pkg_num" ] ; then
             echo "$pkg_num to be upgraded - Proceed to rebuild the docker"
-            
-            docker build  --no-cache=true  \
-              --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-              --build-arg VCS_REF=$(git rev-parse --short HEAD) \
-              #--build-arg BUILD_VERSION=${build_version} \
-              -t $IMAGE_FULLNAME:$IMAGE_TAG \
-              -t $IMAGE_FULLNAME:latest 
-          
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
 
           else
             echo "$pkg_num to be upgraded - No further action" 
           fi
 
-
-
-
 workflows:
   version: 2.1
-  deploy_dockerfile:
+
+  deploy_docker:
     jobs:
-      - check_image
-      #- build-image
-      #- test_image:
-      #    requires:
-      #      - build-image
+     
+      - build-deploy-docker:
+            type: approval # requires that an in-app button be clicked by an appropriate member of the pr
+
+      - test_image:
+          requires:
+            - build-deploy-docker
+
+  update_docker:
+    jobs:
+      - check_update_docker
+      # https://circleci.com/docs/2.0/triggers/
+      #  triggers: #use the triggers key to indicate a scheduled build
+      # - schedule:
+      #     cron: "0 0 * * *" # use cron syntax to set the schedule for every day nightly 12am UTC (min hh  dd month day_week)
+      #     cron: "0 0 1 * *" # Cron-job every 1-st day of the month at 12am UTC
+      #     cron: "0 * * * *" # Cron-job every hour
+
  #      context: org-global
