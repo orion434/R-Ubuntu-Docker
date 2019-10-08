@@ -1,0 +1,10 @@
+.env
+.editorconfig
+.git
+.gitignore
+.github
+.cache
+*.md
+LICENSE
+Makefile
+vendor/

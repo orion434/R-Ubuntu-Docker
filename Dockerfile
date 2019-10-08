@@ -1,17 +1,32 @@
 # Pull base image.
-#FROM ubuntu:latest
-FROM rocker/r-ubuntu:18.04 
 # To install, use the explicit LTS tag---currently 18.04---when pulling
 # https://hub.docker.com/r/rocker/r-ubuntu
+FROM rocker/r-ubuntu:18.04 
 
 # git ssh tar gzip ca-certificates are needed for circleci : https://circleci.com/docs/2.0/custom-images/#required-tools-for-primary-containers
 RUN \
   apt-get update -qq && apt-get install -y -qq --no-install-recommends apt-utils
 RUN \  
-  apt-get install -y -qq --no-install-recommends sudo cmake git ssh tar gzip ca-certificates \
-    libnetcdf-c++4-dev netcdf-bin libnetcdf-dev libgsl-dev \
-    netcdf-bin libssl-dev libboost-all-dev libxml2-dev \
-    subversion
+  apt-get update -qq && \
+  apt-get install -y -qq --no-install-recommends \
+    ca-certificates \
+    cmake \
+    git \ 
+    gzip \
+    libboost-all-dev \
+    libgsl-dev \
+    libnetcdf-c++4-dev \
+    libnetcdf-dev \
+    libssl-dev \
+    libxml2-dev \
+    netcdf-bin \
+    ssh \
+    subversion \
+    sudo \
+    tar  && \
+  apt-get autoremove -y && \
+  apt-get clean
+# Last two lines delete temporary files
 
 RUN \
     Rscript -e 'install.packages("devtools")'
