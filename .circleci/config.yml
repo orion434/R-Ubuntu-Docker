@@ -74,6 +74,7 @@ jobs:
       - run: printf "$pkg_num to be upgraded \n"
 
       - run: |
+          export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
           if [  "$pkg_num" ] ; then
             echo "$pkg_num to be upgraded - Proceed to rebuild the docker"
           else
