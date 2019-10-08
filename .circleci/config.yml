@@ -64,22 +64,25 @@ jobs:
       # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
 
       #https://linoxide.com/linux-how-to/list-number-packages-updates-linux/
-      - run: |
-          printf "Check how many packages can be upgraded\n"
-          apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
-          apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
+      # - run: |
+      #     printf "Check how many packages can be upgraded\n"
+      #     apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
+      #     apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
 
-      - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
+      # - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
 
-      - run: |
-          export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
+      
+      - run: 
+          name: Check if docker need to be updated (based on packages upgrade list)
+          command: |
+              export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
 
-          if [  "$pkg_num" ] ; then
-            echo "$pkg_num to be upgraded - Proceed to rebuild the docker"
+              if [  "$pkg_num" ] ; then
+                echo "$pkg_num to be upgraded - Proceed to rebuild the docker"
 
-          else
-            echo "$pkg_num to be upgraded - No further action" 
-          fi
+              else
+                echo "$pkg_num to be upgraded - No further action" 
+              fi
 
 workflows:
   version: 2.1
@@ -87,10 +90,14 @@ workflows:
   deploy_docker:
     jobs:
      
-      - build_deploy_docker:
-            type: approval # requires that an in-app button be clicked by an appropriate member of the pr
+      - manual_deploy_docker:
+          type: approval # requires that an in-app button be clicked by an appropriate member of the pr
 
-      - test_image:
+      - build_deploy_docker: # Wait for the manual approval to build the image
+          requires:
+          - manual_deploy_docker
+
+      - test_image:  # Only run test on sucessfully builds
           requires:
             - build_deploy_docker
 
