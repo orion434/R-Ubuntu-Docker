@@ -64,44 +64,52 @@ jobs:
       # if != "All packages are up to date"
 
       #- run:  apt-get install md5sum
-      - run: apt-get update && apt list --upgradable
+      # run: apt-get update && apt list --upgradable
       #- run: apt list
 
 
       - run: echo "Check how many packages can be upgraded"
       - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
-      - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
+      - run: $pkg_num = (apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)")
+      - run: echo "$pkgnum to be upgraded"
 
+
+       - run: |
+          if [  "$pkgnum" ] ; then
+            echo "$pkgnum to be upgraded - Proceed to rebuild the docker"
+          else
+            echo "$pkgnum to be upgraded - No further action" 
+          fi
       
-      - run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
-      - run: cur_deps_checksum=$(md5sum deps_checksum) 
+      # - run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
+      # - run: cur_deps_checksum=$(md5sum deps_checksum) 
       
       #- run: apt list --upgradable > deps_checksum && md5sum  deps_checksum
       #- run: cur_deps_checksum=$(apt list --upgradable | md5sum) 
-      - run: printf "cur = $cur_deps_checksum \n" 
+     # - run: printf "cur = $cur_deps_checksum \n" 
 
       #- run: {{ checksum "deps_checksum" }}
       #- run: md5sum  deps_checksum
       # - run: rm deps_checksum  # Delete the temp file with the dir checksum
-      - run:  apt-get update && apt-get upgrade -y -qq --no-install-recommends
+     # - run: apt-get update && apt-get upgrade -y -qq --no-install-recommends
       
 
       #- run: apt list --upgradable > deps_checksum2 && md5sum  deps_checksum2
       #- run: new_deps_checksum=$(apt list --upgradable | md5sum) # && echo  $new__deps_checksum 
 
-      - run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
-      - run: new_deps_checksum=$(md5sum deps_checksum) 
+      #- run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
+      #- run: new_deps_checksum=$(md5sum deps_checksum) 
 
-      - run: printf "new = $new_deps_checksum \n" 
+      #- run: printf "new = $new_deps_checksum \n" 
       
-      - run: |
-          if [ "$new_deps_checksum" == "new_deps_checksum" ] ; then
-          printf "both md5 are equals ($new_deps_checksum)\n"
-          else
-          printf "md5 are different! \n"
-          printf "cur = $cur_deps_checksum \n" 
-          printf "new = $new_deps_checksum \n" 
-          fi
+      # - run: |
+      #     if [ "$new_deps_checksum" == "new_deps_checksum" ] ; then
+      #     printf "both md5 are equals ($new_deps_checksum)\n"
+      #     else
+      #     printf "md5 are different! \n"
+      #     printf "cur = $cur_deps_checksum \n" 
+      #     printf "new = $new_deps_checksum \n" 
+      #     fi
 
 workflows:
   version: 2.1
