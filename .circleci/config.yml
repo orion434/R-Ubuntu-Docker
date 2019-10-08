@@ -14,7 +14,7 @@ refernces:
     run:
       name: Build the docker from Dockerfile
       command: |
-          docker build  --no-cache=true  \
+          docker build ./ --no-cache=true  \
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             --build-arg VCS_REF=$(git rev-parse --short HEAD) \
             -t $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG \
