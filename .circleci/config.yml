@@ -66,9 +66,12 @@ jobs:
       #- run:  apt-get install md5sum
       # run: apt-get update && apt list --upgradable
       #- run: apt list
+
+      #https://linoxide.com/linux-how-to/list-number-packages-updates-linux/
       - run: echo "Check how many packages can be upgraded"
       - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
-      - run: $pkg_num = (apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)")
+      - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
+      - run: pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)")
       - run: echo "$pkgnum to be upgraded"
 
 
