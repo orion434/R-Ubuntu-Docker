@@ -68,7 +68,7 @@ jobs:
       #- run: apt list
 
 
-      - run: "Check how many packages can be upgraded"
+      - run: echo "Check how many packages can be upgraded"
       - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
       - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
 
