@@ -11,8 +11,8 @@ refernces:
 
   build_docker: &build_docker
     run:
-        name: Build the docker from Dockerfile
-        command: |
+      name: Build the docker from Dockerfile
+      command: |
             docker build -t $IMAGE_USERNAME/$IMAGE_NAME:$IMAGE_TAG -t $IMAGE_USERNAME/$IMAGE_NAME:latest  ./ --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
@@ -37,13 +37,10 @@ jobs:
 
     steps:
       - checkout
-
-      # - *create_dir_cache_key
-      # - *restore_cache_ci_dependencies
       - run: pwd
       - run: ls
       
-      <<: *build_docker
+      - *build_docker
 
   test_image:
     docker:
@@ -63,9 +60,6 @@ jobs:
 
     steps:
       - checkout
-      #- run: cat /etc/*-release # Echo Linux version
-      #- run : md5sum --version # 8.28
-
       # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
 
       #https://linoxide.com/linux-how-to/list-number-packages-updates-linux/
