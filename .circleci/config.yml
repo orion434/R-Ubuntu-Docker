@@ -76,10 +76,10 @@ jobs:
 
 
       - run: |
-          if [  "$pkgnum" ] ; then
-            echo "$pkgnum to be upgraded - Proceed to rebuild the docker"
+          if [  "$pkg_num" ] ; then
+            echo "$pkg_num to be upgraded - Proceed to rebuild the docker"
           else
-            echo "$pkgnum to be upgraded - No further action" 
+            echo "$pkg_num to be upgraded - No further action" 
           fi
       
       # - run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
