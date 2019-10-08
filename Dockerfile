@@ -23,10 +23,12 @@ RUN \
     ssh \
     subversion \
     sudo \
-    tar  && \
+    tar  \
+  && \  
   apt-get autoremove -y && \
-  apt-get clean
-# Last two lines delete temporary files
+  apt-get clean  \
+  && rm -rf /var/lib/apt/lists/*
+# Last lines delete temporary files and cache
 
 RUN \
     Rscript -e 'install.packages("devtools")'

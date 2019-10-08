@@ -66,7 +66,18 @@ jobs:
   #     - store_artifacts:
   #         path: Dockerfile
 
-  test_image:
+test_image:
+    docker:
+      - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
+    environment:
+      <<: *image_config
+
+    steps:
+      - checkout
+      - run: cat /etc/*-release # Echo Linux version
+  
+
+  check_image:
     docker:
       - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
     environment:
@@ -76,20 +87,17 @@ jobs:
       - checkout
       - run: cat /etc/*-release # Echo Linux version
       - run: apt list --upgradable
-      - run: apt list
+      #- run: apt list
 
-  
-  #    - store_test_results:
-  #        path: test_results
-
-  #    - store_artifacts:
-  #        path: test_results
+      - run: apt list --upgradable > deps_checksum
+      - run: {{ checksum "deps_checksum" }}
+      - run: md5sum  deps_checksum
 
 workflows:
   version: 2.1
   deploy_dockerfile:
     jobs:
-      - test_image
+      - check_image
       #- build-image
       #- test_image:
       #    requires:
