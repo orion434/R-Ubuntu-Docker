@@ -6,6 +6,7 @@ refernces:
 
     IMAGE_USERNAME: orion42   # Username on docker
     IMAGE_NAME: ubuntu-lts-r    # Name of the project on docker
+    DOCKER_NAME: orion42/ubuntu-lts-r
     IMAGE_TAG: 0.04_devtools     #  Docker version tag
     R_LIBS: ./ci_dependencies
 
@@ -13,20 +14,16 @@ refernces:
     run:
       name: Build the docker from Dockerfile
       command: |
-    
-           IMAGE_FULLNAME="$IMAGE_USERNAME/$IMAGE_NAME"
-
           docker build  --no-cache=true  \
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             --build-arg VCS_REF=$(git rev-parse --short HEAD) \
-            #--build-arg BUILD_VERSION=${build_version} \
-            -t $IMAGE_FULLNAME:$IMAGE_TAG \
-            -t $IMAGE_FULLNAME:alpha \
-            -t $IMAGE_FULLNAME:latest 
-        
+            -t $DOCKER_NAME:$IMAGE_TAG \
+            -t $DOCKER_NAME:alpha \
+            -t $DOCKER_NAME:latest 
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
 
+        #--build-arg BUILD_VERSION=${build_version} \  
         # Preparing the Image for the Registry (docker build)
         # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
         #
