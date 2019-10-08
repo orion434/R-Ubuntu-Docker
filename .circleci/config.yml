@@ -65,7 +65,7 @@ jobs:
       - run: printf "Check how many packages can be upgraded\n"
       - run: apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
       - run: apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
-      - run: pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
+      - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
       - run: echo $pkg_num 
       - run: echo "$pkg_num" 
       - run: echo "$pkg_num to be upgraded"
