@@ -57,14 +57,14 @@ jobs:
     steps:
       - checkout
       - run: cat /etc/*-release # Echo Linux version
-      - run : md5sum --version
+      #- run : md5sum --version # 8.28
 
-      - run:  apt-get install md5sum
-      
+      #- run:  apt-get install md5sum
+
       - run: apt list --upgradable
       #- run: apt list
 
-      #- run: apt list --upgradable > deps_checksum && md5sum  deps_checksum
+      - run: apt list --upgradable > deps_checksum && md5sum  deps_checksum
       - run: cur_deps_checksum=$(apt list --upgradable | md5sum) 
       - run: printf "cur = $cur_deps_checksum \n" 
 
