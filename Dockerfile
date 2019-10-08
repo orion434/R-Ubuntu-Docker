@@ -5,7 +5,10 @@ FROM rocker/r-ubuntu:18.04
 
 # git ssh tar gzip ca-certificates are needed for circleci : https://circleci.com/docs/2.0/custom-images/#required-tools-for-primary-containers
 RUN \
-  apt-get update -qq && apt-get install -y -qq --no-install-recommends apt-utils
+  apt-get update -qq && \\
+  apt-get upgrade -y -qq --no-install-recommends && \\
+  apt-get install -y -qq --no-install-recommends apt-utils
+  
 RUN \  
   apt-get update -qq && \
   apt-get install -y -qq --no-install-recommends \
