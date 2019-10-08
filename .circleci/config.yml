@@ -61,13 +61,13 @@ jobs:
       #- run: apt list
 
       #- run: apt list --upgradable > deps_checksum && md5sum  deps_checksum
-      - run: cur_deps_checksum=$(apt list --upgradable | md5sum) && echo  cur_deps_checksum 
+      - run: cur_deps_checksum=$(apt list --upgradable | md5sum) && echo  $cur_deps_checksum 
       #- run: {{ checksum "deps_checksum" }}
       #- run: md5sum  deps_checksum
       # - run: rm deps_checksum  # Delete the temp file with the dir checksum
-      - run:  apt-get update && apt-get upgrade
+      - run:  apt-get update && apt-get upgrade -y -qq --no-install-recommends
       #- run: apt list --upgradable > deps_checksum2 && md5sum  deps_checksum2
-      - run: new_deps_checksum=$(apt list --upgradable | md5sum) && echo  new__deps_checksum 
+      - run: new_deps_checksum=$(apt list --upgradable | md5sum) && echo  $new__deps_checksum 
       
       - run: |
           if ( "$new_deps_checksum" == "new_deps_checksum") ; then
