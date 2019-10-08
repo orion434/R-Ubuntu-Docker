@@ -51,7 +51,7 @@ jobs:
       - checkout
       - run: cat /etc/*-release # Echo Linux version
   
-  check_update_docker:  # Check if an update of docker is needed, if so run the build-deploy-docker job
+  check_update_docker:  # Check if an update of docker is needed, if so run the build_deploy_docker job
     docker:
       - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
     environment:
@@ -92,7 +92,7 @@ workflows:
 
       - test_image:
           requires:
-            - build-deploy-docker
+            - build_deploy_docker
 
   update_docker:
     jobs:
