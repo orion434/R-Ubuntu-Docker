@@ -3,16 +3,22 @@
 # https://hub.docker.com/r/rocker/r-ubuntu
 FROM rocker/r-ubuntu:18.04 
 
-LABEL org.label-schema.schema-version = "1.0"
 
+ARG BUILD_DATE
+ARG VCS_REF
+# ARG IMG_DIST
+# ARG BUILD_VERSION
+
+# Labels.
 LABEL maintainer="Gian Luigi Somma"
-LABEL org.label-schema.url="https://github.com/orion434/R-Ubuntu-Docker"
-
+LABEL org.label-schema.schema-version = "1.0"
 LABEL org.label-schema.name = "R-Ubuntu-Docker"
-#LABEL org.label-schema.build-date="2016-04-12T23:20:50.52Z"
-LABEL org.label-schema.description = "This service does awesome things with other things"
-LABEL org.label-schema.vcs-ref = "279FA63" # git sha
-LABEL org.label-schema.version = "1.2.3" 
+LABEL org.label-schema.description = "A Ubuntu LTS Docker with R"
+LABEL org.label-schema.vcs="https://github.com/orion434/R-Ubuntu-Docker"
+
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.vcs-ref=$VCS_REF 
+#LABEL org.label-schema.version = $BUILD_VERSION
 
 # git ssh tar gzip ca-certificates are needed for circleci : https://circleci.com/docs/2.0/custom-images/#required-tools-for-primary-containers
 RUN \
