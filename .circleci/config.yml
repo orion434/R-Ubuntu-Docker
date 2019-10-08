@@ -70,10 +70,10 @@ jobs:
       - run: new_deps_checksum=$(apt list --upgradable | md5sum) && echo  $new__deps_checksum 
       
       - run: |
-          if ( "$new_deps_checksum" == "new_deps_checksum") ; then
-          echo "both md5 are equals ($new_deps_checksum)"
+          if [ "$new_deps_checksum" == "new_deps_checksum" ] ; then
+          printf "both md5 are equals ($new_deps_checksum)\n"
           else
-          echo "md5 are different! \n old = $cur_deps_checksum \n new = $new_deps_checksum)"
+          printf "md5 are different! \n old = $cur_deps_checksum \n new = $new_deps_checksum)\n"
           fi
 
 workflows:
