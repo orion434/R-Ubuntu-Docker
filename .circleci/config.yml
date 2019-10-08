@@ -60,8 +60,7 @@ jobs:
       #- run : md5sum --version # 8.28
 
       #- run:  apt-get install md5sum
-
-      - run: apt list --upgradable
+      - run: apt-get update && apt list --upgradable
       #- run: apt list
 
       - run: apt-get -s --no-download dist-upgrade -V | grep '=>' | awk '{print$1}' > deps_checksum
