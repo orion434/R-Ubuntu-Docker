@@ -75,6 +75,8 @@ jobs:
     steps:
       - checkout
       - run: cat /etc/*-release # Echo Linux version
+      - run: apt list --upgradable
+      - run: apt list
 
   
   #    - store_test_results:
@@ -87,8 +89,9 @@ workflows:
   version: 2.1
   deploy_dockerfile:
     jobs:
-      - build-image
-      - test_image:
-          requires:
-            - build-image
+      - test_image
+      #- build-image
+      #- test_image:
+      #    requires:
+      #      - build-image
  #      context: org-global
