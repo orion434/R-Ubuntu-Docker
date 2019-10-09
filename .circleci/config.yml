@@ -175,36 +175,34 @@ workflows:
   #     - test_image:  # Only run test on sucessfully builds
   #         requires:
   #           - build_deploy_docker
-  trigger_deploy_docker:
-    jobs:
-  #     #- trigger_test
-      - test_image
 
-  # nightly:
-  #   triggers:
-  #     - schedule:
-  #         cron: "0 0 * * *"
+  # trigger_deploy_docker:
   #   jobs:
-  #     - call_trigger_job
+  #     - test_image
 
   update_docker:
-    triggers: #use the triggers key to indicate a scheduled build
-      - schedule:
-          cron: "32 * * * *" # Cron-job every hour
-          filters:
-            branches:
-              only: dev
-
-    jobs:
-      #- check_update_docker
       - call_trigger_job
+    
+  # cron_workflow:  
+  #   triggers: #use the triggers key to indicate a scheduled build
+  #     - schedule:
+  #         cron: "32 * * * *" # Cron-job every hour
+  #         filters:
+  #           branches:
+  #             only: dev
+  #   jobs:
+  #     #- check_update_docker
+  #     - call_trigger_job
           
       # https://circleci.com/docs/2.0/triggers/
       # https://circleci.com/docs/2.0/workflows/#scheduling-a-workflow
-      #  triggers: #use the triggers key to indicate a scheduled build
+      #  triggers: #use the triggers key to indicate a scheduled build - filters MUST be defined to make it work
       # - schedule:
       #     cron: "0 0 * * *" # use cron syntax to set the schedule for every day nightly 12am UTC (min hh  dd month day_week)
       #     cron: "0 0 1 * *" # Cron-job every 1-st day of the month at 12am UTC
       #     cron: "0 * * * *" # Cron-job every hour
+      #     filters:
+      #       branches:
+      #         only: dev
 
  #      context: org-global # - To mantain env variables
