@@ -160,7 +160,7 @@ jobs:
             fi
 
 workflows:
-  version: 2
+  version: 2.1
 
   # manual_deploy_docker:
   #   jobs:
