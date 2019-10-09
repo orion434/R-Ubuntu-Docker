@@ -180,17 +180,17 @@ workflows:
   #     #- trigger_test
       - test_image
 
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-    jobs:
-      - call_trigger_job
+  # nightly:
+  #   triggers:
+  #     - schedule:
+  #         cron: "0 0 * * *"
+  #   jobs:
+  #     - call_trigger_job
 
   update_docker:
-    triggers: #use the triggers key to indicate a scheduled build
-      - schedule:
-          cron: "25 * * * *" # Cron-job every hour
+    # triggers: #use the triggers key to indicate a scheduled build
+    #   - schedule:
+    #       cron: "25 * * * *" # Cron-job every hour
     jobs:
       #- check_update_docker
       - call_trigger_job
