@@ -22,7 +22,7 @@ refernces:
             -t $DOCKER_USERNAME/$IMAGE_NAME:latest 
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
-          
+
       #--build-arg BUILD_VERSION=${build_version} \  
       # Preparing the Image for the Registry (docker build)
       # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
@@ -82,8 +82,8 @@ jobs:
       # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
       # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
       
-      - run:  R --version 
-      - run: Rscript -e 'old.packages()'
+      # - run:  R --version  # 3.6.1
+
       # https://www.r-bloggers.com/upgrade-r-without-losing-your-packages/amp/
       # https://stat.ethz.ch/R-manual/R-patched/library/utils/html/update.packages.html
 
@@ -117,7 +117,7 @@ jobs:
 
                   # Update r packages if needed
                   if [  "$r2upg" ]; then                     
-                    sudo Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )'
+                    sudo Rscript -e 'update.packages(ask = FALSE)'
                     sudo Rscript -e 'cat( nrow( old.packages() ) )'
                   fi
 
@@ -136,10 +136,10 @@ jobs:
 workflows:
   version: 2.1
 
-  # deploy_docker:
+  # manual_deploy_docker:
   #   jobs:
      
-  #     - manual_deploy_docker:
+  #     -  wait_manual_approval:
   #         type: approval # requires that an in-app button be clicked by an appropriate member of the pr
 
   #     - build_deploy_docker: # Wait for the manual approval to build the image
@@ -149,6 +149,20 @@ workflows:
   #     - test_image:  # Only run test on sucessfully builds
   #         requires:
   #           - build_deploy_docker
+
+ trigger_deploy_docker:
+    jobs:
+     
+      -  wait_trigger:
+          type: approval # requires that an in-app button be clicked by an appropriate member of the pr
+
+      - build_deploy_docker: # Wait for the manual approval to build the image
+          requires:
+          - manual_deploy_docker
+
+      - test_image:  # Only run test on sucessfully builds
+          requires:
+            - build_deploy_docker
 
   update_docker:
     jobs:
