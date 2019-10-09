@@ -182,14 +182,15 @@ workflows:
       - test_image
 
   update_docker:
-    jobs:
-      #- check_update_docker
-      call_trigger_job:
-          triggers: #use the triggers key to indicate a scheduled build
+    triggers: #use the triggers key to indicate a scheduled build
             - schedule:
               cron: "22 * * * *" # Cron-job every hour
-
+    jobs:
+      #- check_update_docker
+      - call_trigger_job:
+          
       # https://circleci.com/docs/2.0/triggers/
+      # https://circleci.com/docs/2.0/workflows/#scheduling-a-workflow
       #  triggers: #use the triggers key to indicate a scheduled build
       # - schedule:
       #     cron: "0 0 * * *" # use cron syntax to set the schedule for every day nightly 12am UTC (min hh  dd month day_week)
