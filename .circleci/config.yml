@@ -190,11 +190,11 @@ workflows:
   update_docker:
     triggers: #use the triggers key to indicate a scheduled build
       - schedule:
-          cron: "25 * * * *" # Cron-job every hour
+          cron: "32 * * * *" # Cron-job every hour
           filters:
             branches:
               only: dev
-              
+
     jobs:
       #- check_update_docker
       - call_trigger_job
