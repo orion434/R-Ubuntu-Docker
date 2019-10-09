@@ -76,9 +76,10 @@ jobs:
 
               # pip freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
       
-      - run: pip3 --version
-      - run: pip --version
+      - run: command -v pip && pip --version
+      - run: command -v pip3 && pip3 --version
       
+
       - run: 
           name: Check if docker need to be updated (based on packages upgrade list)
           command: |
