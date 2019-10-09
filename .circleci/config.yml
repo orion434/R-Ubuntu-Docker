@@ -33,8 +33,6 @@ refernces:
       # either as project-specific environment variables  or as resources in your organization's org-global Context
       
 jobs:
-  #trigger_test:
-
 
   build_deploy_docker:
     machine: 
@@ -139,31 +137,51 @@ jobs:
                 printf "All packages already up to date. No further action required. \n" 
               fi
 
+  #trigger_test:
+
+  call_trigger_job:
+    machine: 
+        image: circleci/classic:latest
+      environment:
+        <<: *image_config # Import here the configuration parameters
+      steps:
+        - deploy:
+            name: conditionally run a deploy job
+            command: |
+              if [[ true ]] ; then
+                curl --user ${DOCKER_TOKEN}: \
+                        --data build_parameters[CIRCLE_JOB]=test_image \
+                        --data revision=$CIRCLE_SHA1 \
+                        https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
+                    #  https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH     
+              fi
+
 workflows:
   version: 2.1
 
-  manual_deploy_docker:
-    jobs:
+  # manual_deploy_docker:
+  #   jobs:
      
-      -  wait_manual_approval:
-          type: approval # requires that an in-app button be clicked by an appropriate member of the pr
+  #     -  wait_manual_approval:
+  #         type: approval # requires that an in-app button be clicked by an appropriate member of the pr
 
-      - build_deploy_docker: # Wait for the manual approval to build the image
-          requires:
-          - wait_manual_approval
+  #     - build_deploy_docker: # Wait for the manual approval to build the image
+  #         requires:
+  #         - wait_manual_approval
 
-      - test_image:  # Only run test on sucessfully builds
-          requires:
-            - build_deploy_docker
+  #     - test_image:  # Only run test on sucessfully builds
+  #         requires:
+  #           - build_deploy_docker
 
-  trigger_deploy_docker:
-    jobs:
-      #- trigger_test
-      - test_image
+  # trigger_deploy_docker:
+  #   jobs:
+  #     #- trigger_test
+  #     - test_image
 
   update_docker:
     jobs:
-      - check_update_docker
+      #- check_update_docker
+      - call_trigger_job
 
       # https://circleci.com/docs/2.0/triggers/
       #  triggers: #use the triggers key to indicate a scheduled build
