@@ -80,7 +80,11 @@ jobs:
       # - run: command -v pip3 && pip3 --version
       # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
 # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
-      - run:  R --version
+      # - run:  R --version
+      # https://www.r-bloggers.com/upgrade-r-without-losing-your-packages/amp/
+      # https://stat.ethz.ch/R-manual/R-patched/library/utils/html/update.packages.html
+
+       #run: Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )
 
       - run: 
           name: Check if docker need to be updated (based on packages upgrade list)
@@ -92,6 +96,11 @@ jobs:
 
               if [  "$apt2upg" ] || [  "$r2upg" ] ; then
                 printf "Some packages require to be updated. Proceed to rebuild the docker. \n"
+                if [  "$r2upg" ]; then 
+                   Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )
+                    Rscript -e 'cat( nrow( old.packages() ) )
+                fi
+
               else
                 printf "All packages already up to date. No further action required. \n" 
               fi
