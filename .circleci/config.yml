@@ -174,7 +174,7 @@ workflows:
   #           - build_deploy_docker
 
   trigger_deploy_docker:
-  #   jobs:
+    jobs:
   #     #- trigger_test
        - test_image
 
