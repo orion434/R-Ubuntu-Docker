@@ -176,7 +176,7 @@ workflows:
   trigger_deploy_docker:
     jobs:
   #     #- trigger_test
-       - test_image
+      - test_image
 
   update_docker:
     jobs:
