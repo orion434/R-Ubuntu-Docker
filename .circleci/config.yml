@@ -1,5 +1,5 @@
 ---
-version: 2.1
+version: 2
 
 refernces:
   image_config: &image_config
@@ -162,7 +162,7 @@ jobs:
 workflows:
   version: 2
 
-  
+
   # manual_deploy_docker:
   #   jobs:
      
