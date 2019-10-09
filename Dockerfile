@@ -21,6 +21,7 @@ LABEL org.label-schema.vcs-ref=$VCS_REF
 #LABEL org.label-schema.version = $BUILD_VERSION
 
 # git ssh tar gzip ca-certificates are needed for circleci : https://circleci.com/docs/2.0/custom-images/#required-tools-for-primary-containers
+# curl is needed for remote trigger the checks
 
 RUN \
   apt-get update -qq && \
@@ -35,6 +36,7 @@ RUN \
   apt-get install -y -qq --no-install-recommends \
     ca-certificates \
     cmake \
+    curl \
     git \ 
     gzip \
     libboost-all-dev \
