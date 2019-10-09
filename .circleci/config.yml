@@ -176,7 +176,7 @@ workflows:
   cron_workflow:  
     triggers: #use the triggers key to indicate a scheduled build
       - schedule:
-          cron: "32 * * * *" # Cron-job every hour
+          cron: "40 * * * *" # Cron-job every hour
           filters:
             branches:
               only: dev
