@@ -71,12 +71,19 @@ jobs:
 
       # - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
 
+      #pip3 list --outdated,
+              #pip install pip-tools
+
+              # pip freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
+      
+      - run: pip3 --version
+      - run: pip --version
       
       - run: 
           name: Check if docker need to be updated (based on packages upgrade list)
           command: |
               apt2upg=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
-              pip2upg=0
+              pip2upg=pip3 list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
               r2upg=0
               printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
 
