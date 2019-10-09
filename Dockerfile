@@ -23,8 +23,11 @@ LABEL org.label-schema.vcs-ref=$VCS_REF
 # git ssh tar gzip ca-certificates are needed for circleci : https://circleci.com/docs/2.0/custom-images/#required-tools-for-primary-containers
 RUN \
   apt-get update -qq && \\
-  apt-get upgrade -y -qq --no-install-recommends && \\
-  apt-get install -y -qq --no-install-recommends apt-utils
+  apt-get install -y -qq --no-install-recommends \
+  apt-utils \
+  sudo 
+
+RUN sudo apt-get upgrade -y -qq --no-install-recommends
 
 RUN \  
   apt-get update -qq && \

@@ -75,13 +75,15 @@ jobs:
       - run: 
           name: Check if docker need to be updated (based on packages upgrade list)
           command: |
-              export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
+              apt2upg=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
+              pip2upg=0
+              r2upg=0
+              printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
 
-              if [  "$pkg_num" ] ; then
-                echo "$pkg_num to be upgraded - Proceed to rebuild the docker"
-
+              if [  "$apt2upg" ] || [  "$pip2upg" ] || [  "$r2upg" ] ; then
+                printf "Some packages require to be updated. Proceed to rebuild the docker. \n"
               else
-                echo "$pkg_num to be upgraded - No further action" 
+                printf "All packages already up to date. No further action required. \n" 
               fi
 
 workflows:
