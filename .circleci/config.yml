@@ -124,9 +124,9 @@ workflows:
           requires:
             - build_deploy_docker
 
-  # update_docker:
-  #   jobs:
-  #     - check_update_docker
+  update_docker:
+    jobs:
+      - check_update_docker
 
       # https://circleci.com/docs/2.0/triggers/
       #  triggers: #use the triggers key to indicate a scheduled build
