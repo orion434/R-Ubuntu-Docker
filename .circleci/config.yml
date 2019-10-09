@@ -181,7 +181,8 @@ workflows:
   #     - test_image
 
   update_docker:
-    - call_trigger_job
+    jobs:
+      - call_trigger_job
     
   # cron_workflow:  
   #   triggers: #use the triggers key to indicate a scheduled build
