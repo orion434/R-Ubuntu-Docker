@@ -156,11 +156,11 @@ jobs:
                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
                   #  https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH     
 
-                  /project/:vcs-type/:username/:project/tree/:branch
+                 #  /project/:vcs-type/:username/:project/tree/:branch
             fi
 
 workflows:
-  version: 2.1
+  version: 2
 
   # manual_deploy_docker:
   #   jobs:
