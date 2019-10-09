@@ -187,7 +187,7 @@ workflows:
       - call_trigger_job
           triggers: #use the triggers key to indicate a scheduled build
             - schedule:
-              cron: "18 * * * *" # Cron-job every hour
+              cron: "20 * * * *" # Cron-job every hour
 
       # https://circleci.com/docs/2.0/triggers/
       #  triggers: #use the triggers key to indicate a scheduled build
