@@ -144,7 +144,7 @@ workflows:
 
       - build_deploy_docker: # Wait for the manual approval to build the image
           requires:
-          - manual_deploy_docker
+          - wait_deploy_docker
 
       - test_image:  # Only run test on sucessfully builds
           requires:
