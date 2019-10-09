@@ -79,7 +79,7 @@ jobs:
       # - run: command -v pip && pip --version
       # - run: command -v pip3 && pip3 --version
       # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
-# printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
+      # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
       
       - run:  R --version 
       - run: Rscript -e 'old.packages()'
