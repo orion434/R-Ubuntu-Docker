@@ -97,8 +97,8 @@ jobs:
               if [  "$apt2upg" ] || [  "$r2upg" ] ; then
                 printf "Some packages require to be updated. Proceed to rebuild the docker. \n"
                 if [  "$r2upg" ]; then 
-                   Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )
-                    Rscript -e 'cat( nrow( old.packages() ) )
+                   Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )'
+                    Rscript -e 'cat( nrow( old.packages() ) )'
                 fi
 
               else
