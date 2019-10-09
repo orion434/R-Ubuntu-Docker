@@ -33,6 +33,8 @@ refernces:
       # either as project-specific environment variables  or as resources in your organization's org-global Context
       
 jobs:
+  #trigger_test:
+
 
   build_deploy_docker:
     machine: 
@@ -60,7 +62,7 @@ jobs:
 
     steps:
       - checkout
-      - run: cat /etc/*-release # Echo Linux version
+      #- run: cat /etc/*-release # Echo Linux version
 
       # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
 
@@ -128,6 +130,10 @@ jobs:
 
                 # Write here the instruction to manually trigger the job for building the docker 
                 #
+                curl --user ${DOCKER_TOKEN}: \
+                  --data build_parameters[CIRCLE_JOB]=trigger_deploy_docker \
+                  --data revision=$CIRCLE_SHA1 \
+                  https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
 
               else
                 printf "All packages already up to date. No further action required. \n" 
@@ -149,6 +155,11 @@ workflows:
       - test_image:  # Only run test on sucessfully builds
           requires:
             - build_deploy_docker
+
+  trigger_deploy_docker:
+    jobs:
+      #- trigger_test
+      - test_image
 
   update_docker:
     jobs:
