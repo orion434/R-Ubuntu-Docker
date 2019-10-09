@@ -150,7 +150,7 @@ jobs:
           command: |
             if [[ true ]] ; then
               curl --user ${DOCKER_TOKEN}: \
-                      --data build_parameters[CIRCLE_JOB]=trigger_deploy_docker \
+                      --data build_parameters[CIRCLE_JOB]=test_image \
                       --data revision=$CIRCLE_SHA1 \
                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
                   #  https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH     
