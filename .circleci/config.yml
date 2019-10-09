@@ -77,7 +77,7 @@ jobs:
       - checkout
       #- run: cat /etc/*-release # Echo Linux version
 
-      - run: 
+      - deploy: 
           name: Check if docker need to be updated (based on packages upgrade list)
           command: |
 
@@ -159,19 +159,27 @@ jobs:
 workflows:
   version: 2
 
-  # manual_deploy_docker:
-  #   jobs:
-  #
-  #     -  wait_manual_approval:
-  #         type: approval # requires that an in-app button be clicked by an appropriate member of the pr
-  #
-  #     - build_deploy_docker: # Wait for the manual approval to build the image
-  #         requires:
-  #         - wait_manual_approval
-  #
-  #     - test_image:  # Only run test on sucessfully builds
-  #         requires:
-  #           - build_deploy_docker
+  manual_test_image:
+    jobs:
+      -  wait_manual_approval:
+        type: approval # requires that an in-app button be clicked by an appropriate member of the pr
+      - test_image:  # Only run test on sucessfully builds
+          requires:
+          - wait_manual_approval
+
+  manual_deploy_docker:
+    jobs:
+  
+      -  wait_manual_approval:
+          type: approval # requires that an in-app button be clicked by an appropriate member of the pr
+  
+      - build_deploy_docker: # Wait for the manual approval to build the image
+          requires:
+          - wait_manual_approval
+  
+      - test_image:  # Only run test on sucessfully builds
+          requires:
+            - build_deploy_docker
 
   update_docker:
     jobs:
@@ -186,7 +194,7 @@ workflows:
   cron_workflow:  
     triggers: #use the triggers key to indicate a scheduled build
       - schedule:
-          cron: "05 * * * *" # Cron-job every hour
+          cron: "0 0 * * *" # Cron-job every hour
           filters:
             branches:
               only: dev
