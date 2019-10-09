@@ -1,18 +1,29 @@
 ---
 version: 2
 
+# ********** ********** ********** ********** ********** ********** ********** ********** #
+# Requirements:
+#
+# Make sure to set envirnomental variables in circle ci (or as resources in your organization's org-global Context):  
+# - DOCKER_USERNAME : the username on docker
+# - DOCKER_PASSWORD : the password on docker
+# - DOCKER_TOKEN         : a personal API token (https://circleci.com/docs/2.0/managing-api-tokens/#creating-a-personal-api-token)
+#
+# ********** ********** ********** ********** ********** ********** ********** ********** #
+
+# ********** ********** ********** ********** ********** ********** ********** ********** #
+# Code references 
 refernces:
-  image_config: &image_config
 
-    #IMAGE_USERNAME: orion42   # Username on docker
+# Common environmental variables
+  env_vars: &env_vars
     IMAGE_NAME: ubuntu-lts-r    # Name of the project on docker
-    #DOCKER_NAME: orion42/ubuntu-lts-r
     IMAGE_TAG: 0.04_devtools     #  Docker version tag
-    R_LIBS: ./ci_dependencies
 
+# Code for building and push the docker to docker.com
   build_docker: &build_docker
     run:
-      name: Build the docker from Dockerfile
+      name: Build the docker from Dockerfile and push it to docker.com
       command: |
           docker build ./ --no-cache=true  \
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
@@ -24,70 +35,47 @@ refernces:
           docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
 
       #--build-arg BUILD_VERSION=${build_version} \  
+      #
       # Preparing the Image for the Registry (docker build)
       # > https://circleci.com/docs/2.0/custom-images/#preparing-the-image-for-the-registry
       #
       # Pushing the image to the registry (docker login && docker push)
       # > https://circleci.com/docs/2.0/custom-images/#pushing-the-image-to-the-registry
-      # make sure to set your Docker Hub username & password in CircleCI,
-      # either as project-specific environment variables  or as resources in your organization's org-global Context
-      
+
+# ********** ********** ********** ********** ********** ********** ********** ********** #
+# YML jobs      
 jobs:
 
+# Main job to build and push the image to docker.com
   build_deploy_docker:
     machine: 
       image: circleci/classic:latest
     environment:
-      <<: *image_config # Import here the configuration parameters
+      <<: *env_vars # Import here the env_variables. They are used in the building process
     steps:
       - checkout
       - *build_docker
 
+# Pull the image and test if it works.      
   test_image:
     docker:
-      - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
+      - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG # Require env_vars
     environment:
-      <<: *image_config # Needed for using the variables in the name of image
+      <<: *env_vars # Import here the env_variables. They are used in the name of the docker image
     steps:
-      - checkout
+      #- checkout
       - run: cat /etc/*-release # Echo Linux version
+      # Maybe add here some more information to be printed
   
-  check_update_docker:  # Check if an update of docker is needed, if so run the build_deploy_docker job
+ # Check if an update of docker is needed, if so run the build_deploy_docker job      
+  check_update_docker: 
     docker:
       - image: $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG
     environment:
-      <<: *image_config
-
+      <<: *env_vars # Import here the env_variables. They are used in the name of the docker image and in the building process
     steps:
       - checkout
       #- run: cat /etc/*-release # Echo Linux version
-
-      # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
-
-      #https://linoxide.com/linux-how-to/list-number-packages-updates-linux/
-      # - run: |
-      #     printf "Check how many packages can be upgraded\n"
-      #     apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
-      #     apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
-
-      # - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
-
-      #pip3 list --outdated,
-              #pip install pip-tools
-
-              # pip freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
-      
-      # - run: command -v pip && pip --version
-      # - run: command -v pip3 && pip3 --version
-      # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
-      # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
-      
-      # - run:  R --version  # 3.6.1
-
-      # https://www.r-bloggers.com/upgrade-r-without-losing-your-packages/amp/
-      # https://stat.ethz.ch/R-manual/R-patched/library/utils/html/update.packages.html
-
-       #run: Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )
 
       - run: 
           name: Check if docker need to be updated (based on packages upgrade list)
@@ -106,73 +94,73 @@ jobs:
               if [  "$apt2upg" -gt 0 ] || [  "$r2upg" -gt 0 ] ; then
                 printf "Some packages require to be updated. Proceed to rebuild the docker. \n"
 
-                 
-                # The following if are only for test. They should be run while building the docker. 
+                ## ########################################################### 
+                ## The following if are only for test. They should be run while building the docker. 
+                #
+                  # # Update apt packages if needed
+                  # if [  "$apt2upg" ]; then     
+                  #   sudo apt-get upgrade
+                  #   apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
+                  # fi
+                  #
+                  # # Update r packages if needed
+                  # if [  "$r2upg" ]; then                     
+                  #   sudo Rscript -e 'update.packages(ask = FALSE)'
+                  #   sudo Rscript -e 'cat( nrow( old.packages() ) )'
+                  # fi
+                  #  
+                  # apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
+                  # r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
+                  # printf "Pakages to be upgraded: \n apt: $apt2upg  \n r  : $r2upg \n"
+                  #
+                  ## ###########################################################
 
-                  # Update apt packages if needed
-                  if [  "$apt2upg" ]; then     
-                    sudo apt-get upgrade
-                    apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
-                  fi
-
-                  # Update r packages if needed
-                  if [  "$r2upg" ]; then                     
-                    sudo Rscript -e 'update.packages(ask = FALSE)'
-                    sudo Rscript -e 'cat( nrow( old.packages() ) )'
-                  fi
-
-                  apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
-                  r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
-                  printf "Pakages to be upgraded: \n apt: $apt2upg  \n r  : $r2upg \n"
-
-
-                # Write here the instruction to manually trigger the job for building the docker 
+                # Manually trigger the job for building the docker. Api v1.1 requires to have yml and workflow version:2 (not 2.1). 
+                # The Api v.2  is in development. Currently it is not working with curl triggers (re-check periodically in future for updates)
                 #
                 curl --user ${DOCKER_TOKEN}: \
-                  --data build_parameters[CIRCLE_JOB]=trigger_deploy_docker \
-                  --data revision=$CIRCLE_SHA1 \
-                  https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
+                       --data build_parameters[CIRCLE_JOB]=test_image \
+                       --data revision=$CIRCLE_SHA1 \
+                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
               # curl --data build=true -X POST https://registry.hub.docker.com/u/svendowideit/testhook/trigger/be579c82-7c0e-11e4-81c4-0242ac110020/
 
               else
                 printf "All packages already up to date. No further action required. \n" 
               fi
 
-  #trigger_test:
-
-  call_trigger_job:
+# Test the curl_trigger: execute the curl trigger without performing the checks on the packages
+  test_curl_trigger:  
     machine: 
         image: circleci/classic:latest
     environment:
-      <<: *image_config # Import here the configuration parameters
+      <<: *env_vars # Import here the configuration parameters
     steps:
       - deploy:
           name: conditionally run a deploy job
           command: |
             if [[ true ]] ; then
               curl --user ${DOCKER_TOKEN}: \
-                      --data build_parameters[CIRCLE_JOB]=test_image \
-                      --data revision=$CIRCLE_SHA1 \
-                      https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
-                  #  https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH     
-
-                 #  /project/:vcs-type/:username/:project/tree/:branch
+                       --data build_parameters[CIRCLE_JOB]=test_image \
+                       --data revision=$CIRCLE_SHA1 \
+                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
             fi
+
+# ********** ********** ********** ********** ********** ********** ********** ********** #
+# Workflow
 
 workflows:
   version: 2
 
-
   # manual_deploy_docker:
   #   jobs:
-     
+  #
   #     -  wait_manual_approval:
   #         type: approval # requires that an in-app button be clicked by an appropriate member of the pr
-
+  #
   #     - build_deploy_docker: # Wait for the manual approval to build the image
   #         requires:
   #         - wait_manual_approval
-
+  #
   #     - test_image:  # Only run test on sucessfully builds
   #         requires:
   #           - build_deploy_docker
@@ -183,7 +171,7 @@ workflows:
 
   update_docker:
     jobs:
-      - call_trigger_job
+      - test_curl_trigger
     
   # cron_workflow:  
   #   triggers: #use the triggers key to indicate a scheduled build
@@ -194,7 +182,7 @@ workflows:
   #             only: dev
   #   jobs:
   #     #- check_update_docker
-  #     - call_trigger_job
+  #     -  test_curl_trigger
           
       # https://circleci.com/docs/2.0/triggers/
       # https://circleci.com/docs/2.0/workflows/#scheduling-a-workflow
@@ -207,4 +195,45 @@ workflows:
       #       branches:
       #         only: dev
 
- #      context: org-global # - To mantain env variables
+
+
+ ########################################
+
+  #      context: org-global # - To mantain env variables (used in the workflows section)
+
+# - run:  R --version  # 3.6.1
+
+# https://www.r-bloggers.com/upgrade-r-without-losing-your-packages/amp/
+# https://stat.ethz.ch/R-manual/R-patched/library/utils/html/update.packages.html
+
+  #run: Rscript -e 'cat( nrow( update.packages(ask = FALSE) ) )
+
+##############
+
+
+      # sudo apt update 2>/dev/null | grep packages | cut -d '.' -f 1
+
+      #https://linoxide.com/linux-how-to/list-number-packages-updates-linux/
+      # - run: |
+      #     printf "Check how many packages can be upgraded\n"
+      #     apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
+      #     apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)"
+
+      # - run: export pkg_num=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") && echo $pkg_num 
+
+
+  ############
+
+  # Check pip3 packages:
+
+        #pip3 list --outdated,
+              #pip install pip-tools
+
+              # pip freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
+      
+      # - run: command -v pip && pip --version
+      # - run: command -v pip3 && pip3 --version
+      # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
+      # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
+
+      ####
