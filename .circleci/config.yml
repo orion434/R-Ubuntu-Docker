@@ -84,7 +84,7 @@ jobs:
           name: Check if docker need to be updated (based on packages upgrade list)
           command: |
               apt2upg=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
-              pip2upg=pip3 list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
+              pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
               r2upg=0
               printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
 
