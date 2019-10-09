@@ -82,7 +82,7 @@ jobs:
 # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
       
       - run:  R --version 
-      - run: Rscript -e 'old.packages()''
+      - run: Rscript -e 'old.packages()'
       # https://www.r-bloggers.com/upgrade-r-without-losing-your-packages/amp/
       # https://stat.ethz.ch/R-manual/R-patched/library/utils/html/update.packages.html
 
@@ -124,9 +124,10 @@ workflows:
           requires:
             - build_deploy_docker
 
-  update_docker:
-    jobs:
-      - check_update_docker
+  # update_docker:
+  #   jobs:
+  #     - check_update_docker
+
       # https://circleci.com/docs/2.0/triggers/
       #  triggers: #use the triggers key to indicate a scheduled build
       # - schedule:
