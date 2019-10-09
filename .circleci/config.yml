@@ -43,7 +43,7 @@ refernces:
       # > https://circleci.com/docs/2.0/custom-images/#pushing-the-image-to-the-registry
 
 # ********** ********** ********** ********** ********** ********** ********** ********** #
-# YML jobs      
+# JOBS
 jobs:
 
 # Main job to build and push the image to docker.com
@@ -173,16 +173,16 @@ workflows:
     jobs:
       - test_curl_trigger
     
-  # cron_workflow:  
-  #   triggers: #use the triggers key to indicate a scheduled build
-  #     - schedule:
-  #         cron: "32 * * * *" # Cron-job every hour
-  #         filters:
-  #           branches:
-  #             only: dev
-  #   jobs:
-  #     #- check_update_docker
-  #     -  test_curl_trigger
+  cron_workflow:  
+    triggers: #use the triggers key to indicate a scheduled build
+      - schedule:
+          cron: "32 * * * *" # Cron-job every hour
+          filters:
+            branches:
+              only: dev
+    jobs:
+      #- check_update_docker
+      -  test_curl_trigger
           
       # https://circleci.com/docs/2.0/triggers/
       # https://circleci.com/docs/2.0/workflows/#scheduling-a-workflow
