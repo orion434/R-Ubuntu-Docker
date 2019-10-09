@@ -132,6 +132,7 @@ jobs:
                   --data build_parameters[CIRCLE_JOB]=trigger_deploy_docker \
                   --data revision=$CIRCLE_SHA1 \
                   https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
+              # curl --data build=true -X POST https://registry.hub.docker.com/u/svendowideit/testhook/trigger/be579c82-7c0e-11e4-81c4-0242ac110020/
 
               else
                 printf "All packages already up to date. No further action required. \n" 
