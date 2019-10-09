@@ -76,19 +76,21 @@ jobs:
 
               # pip freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
       
-      - run: command -v pip && pip --version
-      - run: command -v pip3 && pip3 --version
-      
+      # - run: command -v pip && pip --version
+      # - run: command -v pip3 && pip3 --version
+      # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
+# printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
+      - run:  R --version
 
       - run: 
           name: Check if docker need to be updated (based on packages upgrade list)
           command: |
               apt2upg=$(apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)") 
-              pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
-              r2upg=0
-              printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
+              r2upg=$( Rscript -e 'cat( nrow( old.packages() ) )' )
 
-              if [  "$apt2upg" ] || [  "$pip2upg" ] || [  "$r2upg" ] ; then
+              printf "Pakages to be upgraded: \n apt: $apt2upg  \n r  : $r2upg \n"
+
+              if [  "$apt2upg" ] || [  "$r2upg" ] ; then
                 printf "Some packages require to be updated. Proceed to rebuild the docker. \n"
               else
                 printf "All packages already up to date. No further action required. \n" 
