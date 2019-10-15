@@ -47,7 +47,7 @@ refernces:
     deploy:
       name: Call the test_image job via curl request
       command: |
-           apt-get update -qq &&  apt-get install -y -qq --no-install-recommends curl
+          #  sudo apt-get update -qq &&  apt-get install -y -qq --no-install-recommends curl
             curl --user ${DOCKER_TOKEN}: \
                 --data build_parameters[CIRCLE_JOB]=test_image \
                 --data revision=$CIRCLE_SHA1 \
@@ -132,7 +132,7 @@ jobs:
                 # The Api v.2  is in development. Currently it is not working with curl triggers (re-check periodically in future for updates)
                 #
 
-                apt-get update -qq &&  apt-get install -y -qq --no-install-recommends curl
+                # sudo apt-get update -qq &&  apt-get install -y -qq --no-install-recommends curl
 
                 curl --user ${DOCKER_TOKEN}: \
                        --data build_parameters[CIRCLE_JOB]=build_deploy_docker \
