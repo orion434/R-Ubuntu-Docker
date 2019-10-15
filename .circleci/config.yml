@@ -163,7 +163,8 @@ workflows:
     jobs:
       -  wait_manual_approval:
           type: approval # requires that an in-app button be clicked by an appropriate member of the pr
-     - test_curl_trigger:     
+
+      - test_curl_trigger:     
       # - test_image:  # Only run test on sucessfully builds
           requires:
           - wait_manual_approval
