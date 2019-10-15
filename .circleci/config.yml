@@ -42,6 +42,18 @@ refernces:
       # Pushing the image to the registry (docker login && docker push)
       # > https://circleci.com/docs/2.0/custom-images/#pushing-the-image-to-the-registry
 
+# Code for calling the test of the image via the curl request
+  call_test_image_job: &call_test_image_job
+    deploy:
+      name: Call the test_image job via curl request
+      command: |
+           apt-get update -qq &&  apt-get install -y -qq --no-install-recommends curl
+            curl --user ${DOCKER_TOKEN}: \
+                --data build_parameters[CIRCLE_JOB]=test_image \
+                --data revision=$CIRCLE_SHA1 \
+                https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/$CIRCLE_BRANCH
+
+
 # ********** ********** ********** ********** ********** ********** ********** ********** #
 # JOBS
 jobs:
@@ -55,6 +67,7 @@ jobs:
     steps:
       - checkout
       - *build_docker
+      - *call_test_image_job
 
 # Pull the image and test if it works.      
   test_image:
@@ -124,13 +137,8 @@ jobs:
                 curl --user ${DOCKER_TOKEN}: \
                        --data build_parameters[CIRCLE_JOB]=build_deploy_docker \
                        --data revision=$CIRCLE_SHA1 \
-                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
+                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/$CIRCLE_BRANCH
               # curl --data build=true -X POST https://registry.hub.docker.com/u/svendowideit/testhook/trigger/be579c82-7c0e-11e4-81c4-0242ac110020/
-                
-                # curl --user ${DOCKER_TOKEN}: \
-                #        --data build_parameters[CIRCLE_JOB]=test_image \
-                #        --data revision=$CIRCLE_SHA1 \
-                #        https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
               
               else
                 printf "All packages already up to date. No further action required. \n" 
@@ -143,15 +151,7 @@ jobs:
     environment:
       <<: *env_vars # Import here the configuration parameters
     steps:
-      - deploy:
-          name: conditionally run a deploy job
-          command: |
-            if [[ true ]] ; then
-              curl --user ${DOCKER_TOKEN}: \
-                       --data build_parameters[CIRCLE_JOB]=test_image \
-                       --data revision=$CIRCLE_SHA1 \
-                       https://circleci.com/api/v1.1/project/github/orion434/R-Ubuntu-Docker/tree/dev
-            fi
+      - *call_test_image_job   
 
 # ********** ********** ********** ********** ********** ********** ********** ********** #
 # Workflow
@@ -163,11 +163,12 @@ workflows:
     jobs:
       -  wait_manual_approval:
           type: approval # requires that an in-app button be clicked by an appropriate member of the pr
-      - test_image:  # Only run test on sucessfully builds
+     - test_curl_trigger:     
+      # - test_image:  # Only run test on sucessfully builds
           requires:
           - wait_manual_approval
 
-  manual_deploy_docker:
+  manual_build_deploy_docker:
     jobs:
   
       -  wait_manual_approval:
@@ -177,16 +178,15 @@ workflows:
           requires:
           - wait_manual_approval
   
-      - test_image:  # Only run test on sucessfully builds
-          requires:
-            - build_deploy_docker
+      # - test_image:  # Only run test on sucessfully builds
+      #     requires:
+      #       - build_deploy_docker
 
   update_docker:
     jobs:
      # - test_curl_trigger
       - check_update_docker # If updates are needed, call build_deploy_docker
 
-      #  - build_deploy_docker
       # - test_image:  # Only run test on sucessfully builds
   #         requires:
   #           - build_deploy_docker
@@ -194,7 +194,8 @@ workflows:
   cron_workflow:  
     triggers: #use the triggers key to indicate a scheduled build
       - schedule:
-          cron: "0 0 * * *" # Cron-job every hour
+          # cron: "0 0 * * *" # Cron-job every midnight
+          cron: "18 * * * *" # Cron-job every hour
           filters:
             branches:
               only: dev
@@ -202,9 +203,9 @@ workflows:
       #-  test_curl_trigger
       - check_update_docker # If updates are needed, call build_deploy_docker
 
-      - test_image:  # Only run test on sucessfully builds
-          requires:
-            - check_update_docker
+      # - test_image:  # Only run test on sucessfully builds
+      #     requires:
+      #       - check_update_docker
 
       # https://circleci.com/docs/2.0/triggers/
       # https://circleci.com/docs/2.0/workflows/#scheduling-a-workflow
