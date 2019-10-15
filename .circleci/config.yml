@@ -18,7 +18,7 @@ refernces:
 # Common environmental variables
   env_vars: &env_vars
     IMAGE_NAME: ubuntu-lts-r    # Name of the project on docker
-    IMAGE_TAG: 0.04_devtools     #  Docker version tag
+    IMAGE_TAG: latest     #  Docker version tag
 
 # Code for building and push the docker to docker.com
   build_docker: &build_docker
@@ -29,8 +29,7 @@ refernces:
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             --build-arg VCS_REF=$(git rev-parse --short HEAD) \
             -t $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG \
-            -t $DOCKER_USERNAME/$IMAGE_NAME:alpha \
-            -t $DOCKER_USERNAME/$IMAGE_NAME:latest 
+            # -t $DOCKER_USERNAME/$IMAGE_NAME:alpha \
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
 
@@ -200,7 +199,8 @@ workflows:
           cron: "0 * * * *" # Cron-job every hour
           filters:
             branches:
-              only: dev
+              only: dev, master
+
     jobs:
       #-  test_curl_trigger
       - check_update_docker # If updates are needed, call build_deploy_docker
