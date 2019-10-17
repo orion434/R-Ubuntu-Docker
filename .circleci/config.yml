@@ -111,7 +111,7 @@ jobs:
                 #
                   # # Update apt packages if needed
                   if [  "$apt2upg" ]; then     
-                        sudo apt-get -s dist-upgrade" 
+                        sudo apt-get -s dist-upgrade
                   #   sudo apt-get upgrade
                   #   apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
                   fi
