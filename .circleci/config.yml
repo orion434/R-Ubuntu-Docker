@@ -110,16 +110,18 @@ jobs:
                 ## The following if are only for test. They should be run while building the docker. 
                 #
                   # # Update apt packages if needed
-                  # if [  "$apt2upg" ]; then     
+                  if [  "$apt2upg" ]; then     
+                        sudo apt-get -s dist-upgrade" 
                   #   sudo apt-get upgrade
                   #   apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
-                  # fi
+                  fi
                   #
                   # # Update r packages if needed
-                  # if [  "$r2upg" ]; then                     
+                  if [  "$r2upg" ]; then                     
+                       sudo Rscript -e 'old.packages()'
                   #   sudo Rscript -e 'update.packages(ask = FALSE)'
                   #   sudo Rscript -e 'cat( nrow( old.packages() ) )'
-                  # fi
+                  fi
                   #  
                   # apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
                   # r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
@@ -248,17 +250,3 @@ workflows:
 
 
   ############
-
-  # Check pip3 packages:
-
-        #pip3 list --outdated,
-              #pip install pip-tools
-
-              # pip freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
-      
-      # - run: command -v pip && pip --version
-      # - run: command -v pip3 && pip3 --version
-      # pip2upg=pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | wc -l
-      # printf "Pakages to be upgraded: \n apt: $apt2upg \n pip: not checked \n r  : not checked \n"
-
-      ####
