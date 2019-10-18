@@ -203,8 +203,8 @@ workflows:
     triggers: #use the triggers key to indicate a scheduled build
       - schedule:
           #     cron: "0 0 1 * *" # Cron-job every 1-st day of the month at 12am UTC
-          # cron: "0 0 * * *" # Cron-job every midnight
-          cron: "0 * * * *" # Cron-job every hour
+          cron: "0 0 * * *" # Cron-job every midnight
+          # cron: "0 * * * *" # Cron-job every hour
           filters:
             branches:
               # only: dev, master
