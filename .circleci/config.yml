@@ -100,7 +100,7 @@ jobs:
               r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
 
               # Print information
-              printf "Pakages to be upgraded: \n apt: $apt2upg  \n r  : $r2upg \n"
+              printf "Pakages to be upgraded: \n apt: $apt2upg  \n r   : $r2upg \n"
 
               # Check if either (apt or r) packages need to be upgraded are >0 then echo info + rebuild the docker
               if [  "$apt2upg" -gt 0 ] || [  "$r2upg" -gt 0 ] ; then
@@ -118,10 +118,8 @@ jobs:
                   #
                   # # Update r packages if needed
                   if [  "$r2upg" ]; then                     
-                       sudo Rscript -e 'old.packages()'
-                       printf "Updating R packages... \n"
+                          printf "Updating $r2upg R packages... \n"
                     sudo Rscript -e 'update.packages(ask = FALSE)'
-                    sudo Rscript -e 'cat( nrow( old.packages() ) )'
                   fi
                   #  
                   # apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
@@ -145,6 +143,19 @@ jobs:
               else
                 printf "All packages already up to date. No further action required. \n" 
               fi
+
+      - deploy: 
+          name: Check if packages were updated
+          command: |
+
+              # Check if there are apt packages to be upgraded
+              apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
+
+              # Check if there are old r packages to be upgraded. If not convert NULL to 0
+              r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
+
+              # Print information
+              printf "Pakages to be upgraded: \n apt: $apt2upg  \n r   : $r2upg \n"
 
 # Test the curl_trigger: execute the curl trigger without performing the checks on the packages
   test_curl_trigger:  
