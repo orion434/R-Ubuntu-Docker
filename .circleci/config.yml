@@ -119,8 +119,9 @@ jobs:
                   # # Update r packages if needed
                   if [  "$r2upg" ]; then                     
                        sudo Rscript -e 'old.packages()'
-                  #   sudo Rscript -e 'update.packages(ask = FALSE)'
-                  #   sudo Rscript -e 'cat( nrow( old.packages() ) )'
+                       printf "Updating R packages... \n"
+                    sudo Rscript -e 'update.packages(ask = FALSE)'
+                    sudo Rscript -e 'cat( nrow( old.packages() ) )'
                   fi
                   #  
                   # apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
@@ -201,7 +202,8 @@ workflows:
           cron: "0 * * * *" # Cron-job every hour
           filters:
             branches:
-              only: dev, master
+              # only: dev, master
+              only: master
 
     jobs:
       #-  test_curl_trigger
