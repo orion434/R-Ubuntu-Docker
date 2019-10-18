@@ -62,11 +62,9 @@ RUN \
 
 RUN \
     # Check if there are apt packages to be upgraded
-    apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" ) 
-
+    apt2upg=$( sudo apt-get -s dist-upgrade | grep -Po "^[[:digit:]]+ (?=upgraded)" )  \
     # Check if there are old r packages to be upgraded. If not convert NULL to 0
-    r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
-
+    r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  ) \
     # Print information
     printf "Pakages to be upgraded: \n apt: $apt2upg  \n r  : $r2upg \n"
 
