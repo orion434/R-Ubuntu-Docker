@@ -32,8 +32,8 @@ RUN \
   sudo apt-get upgrade -y -qq --no-install-recommends
 
 RUN \  
-  apt-get update -qq && \
-  apt-get install -y -qq --no-install-recommends \
+  sudo apt-get update -qq && \
+  sudo apt-get install -y -qq --no-install-recommends \
     ca-certificates \
     cmake \
     curl \
@@ -51,8 +51,8 @@ RUN \
     sudo \
     tar  \
   && \  
-  apt-get autoremove -y && \
-  apt-get clean  \
+  sudo apt-get autoremove -y && \
+  sudo apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 # Last lines delete temporary files and cache
 
