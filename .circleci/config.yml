@@ -30,7 +30,7 @@ refernces:
             --build-arg VCS_REF=$(git rev-parse --short HEAD) \
             -t $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG \
             # -t $DOCKER_USERNAME/$IMAGE_NAME:alpha \
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker login -u $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD
           docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG 
 
       #--build-arg BUILD_VERSION=${build_version} \  
@@ -65,7 +65,7 @@ refernces:
         r2upg=$( sudo Rscript -e ' r_upg <-nrow( old.packages() ) ; if ( is.null(r_upg) ) { r_upg =0 }  ; cat(r_upg)'  )
 
         # Print information
-        printf "Pakages to be upgraded: \n apt: $apt2upg  \n r   : $r2upg \n"
+        printf "Pakages to be upgraded: \n apt: $apt2upg  \n r  : $r2upg \n"
 
 # ********** ********** ********** ********** ********** ********** ********** ********** #
 # JOBS
@@ -202,8 +202,8 @@ workflows:
   cron_workflow:  
     triggers: #use the triggers key to indicate a scheduled build
       - schedule:
-          #     cron: "0 0 1 * *" # Cron-job every 1-st day of the month at 12am UTC
-          cron: "0 0 * * *" # Cron-job every midnight
+          cron: "0 0 1 * *" # Cron-job every 1-st day of the month at 12am UTC
+          # cron: "0 0 * * *" # Cron-job every midnight
           # cron: "0 * * * *" # Cron-job every hour
           filters:
             branches:
